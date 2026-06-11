@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>건축사 시험 준비 앱</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="건축사 시험 준비">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#4285f4">
+  <style>
+    * { box-sizing: border-box; }
+    body { 
+      font-family: '맑은 고딕', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+      margin: 0; 
+      padding: 0; 
+      background: #f5f5f5; 
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .container { 
+      max-width: 500px; 
+      margin: 0 auto; 
+      background: #fff; 
+      padding: 16px; 
+      border-radius: 0;
+      box-shadow: none;
+      min-height: 100vh;
+    }
+    @media (min-width: 768px) {
+      .container {
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px #ccc;
+        margin: 20px auto;
+        min-height: auto;
+      }
+    }
+    h1 { text-align: center; font-size: 1.5em; margin: 0 0 20px 0; }
+    .row { display: flex; margin-bottom: 12px; flex-wrap: wrap; }
+    .row > div { flex: 1; text-align: center; min-width: 0; }
+    .label { font-weight: bold; }
+    input[type="number"] { 
+      width: 60px; 
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 4px;
+    }
+    .tabs { 
+      display: flex; 
+      margin-bottom: 16px; 
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .tab { 
+      flex: 1; 
+      padding: 12px 8px; 
+      background: #eee; 
+      cursor: pointer; 
+      text-align: center; 
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      border: none;
+      outline: none;
+    }
+    .tab.active { background: #4285f4; color: #fff; }
+    .tab:active { transform: scale(0.98); }
+    .todo-list { margin-top: 24px; }
+    .todo-item { 
+      display: flex; 
+      align-items: flex-start; 
+      margin-bottom: 12px; 
+      padding: 8px;
+      border-radius: 8px;
+      background: #f9f9f9;
+      border: 1px solid #e0e0e0;
+    }
+    .todo-item textarea {
+      flex: 1;
+      min-width: 0;
+      margin-right: 8px;
+      min-height: 20px;
+      box-sizing: border-box;
+      resize: none;
+      max-height: 120px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 8px;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+    .todo-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+      margin-top: 2px;
+    }
+    .todo-item button {
+      padding: 6px 12px;
+      background: #ff4444;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      margin-left: 8px;
+    }
+    .todo-item button:active {
+      transform: scale(0.95);
+    }
+    .priority { width: 60px; }
+    .done { text-decoration: line-through; color: #aaa; }
+    
+    /* 연습 페이지 스타일 */
+    .practice-table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin-top: 16px; 
+      font-size: 12px;
+    }
+    .practice-table th, .practice-table td { 
+      border: 1px solid #ddd; 
+      padding: 6px 4px; 
+      text-align: center; 
+      font-size: 12px; 
+    }
+    .practice-table th { 
+      background-color: #f5f5f5; 
+      font-weight: bold; 
+      font-size: 11px;
+    }
+    .practice-table .year-cell { 
+      background-color: #f9f9f9; 
+      font-weight: bold; 
+      width: 50px; 
+    }
+    .practice-table .type-cell { 
+      width: 60px; 
+    }
+    .practice-table .count-cell { 
+      width: 100px; 
+    }
+    .practice-table .note-cell { 
+      width: auto; 
+    }
+    .count-boxes { 
+      display: flex; 
+      gap: 3px; 
+      justify-content: center; 
+    }
+    .count-box { 
+      width: 18px; 
+      height: 18px; 
+      border: 1px solid #ccc; 
+      background-color: #fff; 
+      cursor: pointer; 
+      transition: all 0.2s ease; 
+      border-radius: 2px;
+    }
+    .count-box:active {
+      transform: scale(0.9);
+    }
+    .count-box.filled.plane {
+      background-color: #ff4444;
+    }
+    .count-box.filled.section {
+      background-color: #4444ff;
+    }
+    .count-box.filled.structure {
+      background-color: #333;
+    }
+    .count-box.filled.success {
+      background-color: #44ff44;
+    }
+    .practice-table input[type="text"] { 
+      width: 100%; 
+      border: none; 
+      outline: none; 
+      text-align: center; 
+      font-size: 12px; 
+      padding: 4px;
+    }
+    .practice-table select {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-size: 11px;
+      padding: 2px;
+    }
+    .add-row-btn { 
+      margin-top: 16px; 
+      padding: 12px 20px; 
+      background-color: #4285f4; 
+      color: white; 
+      border: none; 
+      border-radius: 8px; 
+      cursor: pointer; 
+      font-size: 16px;
+      font-weight: 500;
+      width: 100%;
+      transition: all 0.2s ease;
+    }
+    .add-row-btn:active { 
+      transform: scale(0.98);
+      background-color: #3367d6; 
+    }
+    
+    /* 입력 필드 모바일 최적화 */
+    input[type="text"], textarea, select {
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 8px;
+    }
+    
+    /* 홈 페이지 버튼 스타일 */
+    .copy-btn {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 16px 24px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      width: 100%;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    .copy-btn:active {
+      transform: scale(0.98);
+      background-color: #45a049;
+    }
+    
+    /* 모바일 터치 최적화 */
+    button, .tab, .count-box, input, textarea, select {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    
+    textarea {
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      user-select: text;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 탭 네비게이션 -->
+    <div class="tabs">
+      <div class="tab active" onclick="showPage(0)">홈</div>
+      <div class="tab" onclick="showPage(1)">평면</div>
+      <div class="tab" onclick="showPage(2)">단면</div>
+      <div class="tab" onclick="showPage(3)">구조</div>
+      <div class="tab" onclick="showPage(4)">연습</div>
+    </div>
+
+    <!-- 1페이지: 랜딩페이지 -->
+    <div class="page" id="page-0">
+      <h1>건축사 시험 준비</h1>
+      <div class="row"><div>2026년 9월 5일(토)</div></div>
+      <div class="row">
+        <div>
+          <span class="label" id="d-day" style="font-size:2em;"></span>
+          <div style="font-size:0.8em;" id="today-info"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div>평면</div>
+        <div>단면</div>
+        <div>구조</div>
+      </div>
+      <div class="row">
+        <div>100회</div>
+        <div>100회</div>
+        <div>100회</div>
+      </div>
+      <div class="row">
+        <div><input type="number" id="count-0" min="0" max="100" value="17" onchange="updateRateAndSave(0)"/>회</div>
+        <div><input type="number" id="count-1" min="0" max="100" value="25" onchange="updateRateAndSave(1)"/>회</div>
+        <div><input type="number" id="count-2" min="0" max="100" value="51" onchange="updateRateAndSave(2)"/>회</div>
+      </div>
+      <div class="row">
+        <div id="rate-0">17%</div>
+        <div id="rate-1">25%</div>
+        <div id="rate-2">51%</div>
+      </div>
+      <div class="row">
+        <div><input type="text" id="time-0" placeholder="소요시간 입력" style="width:70%; text-align:center;" value="3:30"/></div>
+        <div><input type="text" id="time-1" placeholder="소요시간 입력" style="width:70%; text-align:center;" value="2:35"/></div>
+        <div><input type="text" id="time-2" placeholder="소요시간 입력" style="width:70%; text-align:center;"/></div>
+      </div>
+      <div class="row">
+        <div>
+          <textarea id="my-mind" placeholder="나의 각오를 적어보세요" style="width:90%; min-height:30px; line-height:30px; text-align:center; font-size:1.5em; border:1px solid #ccc; border-radius:4px; padding:5px; resize:none; box-sizing:border-box;">이 길밖에 없다!!!
+인지적 회피반응, 극복?
+50-10, 40-20, 30-30(시간 내 완성), 20-40, 10-50, 0-60. 
+목표는 60+
+((문제를 해결하려면, 
+문제에 매달려야 한다!))
+((느슨하게 인생을 살면, 
+인생을 낭비하는 것이다!))</textarea>
+          <span id="mind-saved-msg" style="display:none; color:green; font-size:0.9em; margin-left:8px;">저장되었습니다!</span>
+        </div>
+      </div>
+      
+      <div class="row" style="margin-top: 20px; text-align: center;">
+        <button onclick="copyAllData()" class="copy-btn">
+          📋 전체복사하기
+        </button>
+      </div>
+    </div>
+
+    <!-- 2페이지: 평면설계 to-do-list -->
+    <div class="page" id="page-1" style="display:none;">
+      <h2>평면설계 To-Do List</h2>
+      <div class="todo-list" id="todo-list-0"></div>
+      <div style="display: flex; gap: 8px; margin-top: 16px;">
+        <input type="text" id="todo-input-0" placeholder="할 일을 입력하세요" style="flex: 1; font-size: 16px; padding: 12px; border: 1px solid #ddd; border-radius: 8px;"/>
+        <select id="priority-0" style="font-size: 16px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; min-width: 60px;">
+          <option value="상">상</option>
+          <option value="중">중</option>
+          <option value="하">하</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 3페이지: 단면설계 to-do-list -->
+    <div class="page" id="page-2" style="display:none;">
+      <h2>단면설계 To-Do List</h2>
+      <div class="todo-list" id="todo-list-1"></div>
+      <div style="display: flex; gap: 8px; margin-top: 16px;">
+        <input type="text" id="todo-input-1" placeholder="할 일을 입력하세요" style="flex: 1; font-size: 16px; padding: 12px; border: 1px solid #ddd; border-radius: 8px;"/>
+        <select id="priority-1" style="font-size: 16px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; min-width: 60px;">
+          <option value="상">상</option>
+          <option value="중">중</option>
+          <option value="하">하</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 4페이지: 구조 to-do-list -->
+    <div class="page" id="page-3" style="display:none;">
+      <h2>구조 To-Do List</h2>
+      <div class="todo-list" id="todo-list-2"></div>
+      <div style="display: flex; gap: 8px; margin-top: 16px;">
+        <input type="text" id="todo-input-2" placeholder="할 일을 입력하세요" style="flex: 1; font-size: 16px; padding: 12px; border: 1px solid #ddd; border-radius: 8px;"/>
+        <select id="priority-2" style="font-size: 16px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; min-width: 60px;">
+          <option value="상">상</option>
+          <option value="중">중</option>
+          <option value="하">하</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 5페이지: 연습 기록 -->
+    <div class="page" id="page-4" style="display:none;">
+      <h2>연습 기록</h2>
+      <table class="practice-table" id="practice-table">
+        <thead>
+          <tr>
+            <th>연도</th>
+            <th>구분</th>
+            <th>횟수</th>
+            <th>비고</th>
+          </tr>
+        </thead>
+        <tbody id="practice-tbody">
+        </tbody>
+      </table>
+      <button class="add-row-btn" onclick="addPracticeRow()">행 추가</button>
+    </div>
+  </div>
+
+  <script>
+    // D-day 계산
+    function updateDDay() {
+      const examDate = new Date('2026-09-05T00:00:00');
+      const now = new Date();
+      const diff = Math.ceil((examDate - now) / (1000 * 60 * 60 * 24));
+      document.getElementById('d-day').textContent = `D-${diff}일`;
+      const days = ['일', '월', '화', '수', '목', '금', '토'];
+      document.getElementById('today-info').textContent =
+        `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()} (${days[now.getDay()]}) ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
+    }
+    setInterval(updateDDay, 1000);
+    updateDDay();
+
+    // 실행횟수 입력값 저장/불러오기 및 달성율 계산
+    function updateRate() {
+      for (let i = 0; i < 3; i++) {
+        const count = parseInt(document.getElementById(`count-${i}`).value, 10) || 0;
+        const rate = Math.min(100, Math.round(count));
+        document.getElementById(`rate-${i}`).textContent = `${rate}%`;
+      }
+    }
+    function updateRateAndSave(idx) {
+      const val = document.getElementById(`count-${idx}`).value;
+      localStorage.setItem(`kira2_count_${idx}`, val);
+      updateRate();
+    }
+    // 새로고침 시 값 불러오기
+    for (let i = 0; i < 3; i++) {
+      const saved = localStorage.getItem(`kira2_count_${i}`);
+      if (saved !== null) {
+        document.getElementById(`count-${i}`).value = saved;
+      }
+    }
+    updateRate();
+
+    // 탭 전환
+    function showPage(idx) {
+      document.querySelectorAll('.tab').forEach((el, i) => {
+        el.classList.toggle('active', i === idx);
+      });
+      document.querySelectorAll('.page').forEach((el, i) => {
+        el.style.display = (i === idx) ? '' : 'none';
+      });
+      // 현재 탭 정보를 localStorage에 저장
+      localStorage.setItem('kira2_current_page', idx);
+      
+      // 연습 페이지인 경우 테이블 렌더링
+      if (idx === 4) {
+        renderPracticeTable();
+      }
+    }
+
+    // localStorage에서 todos 불러오기
+    function loadTodos() {
+      const data = localStorage.getItem('kira2_todos');
+      if (data) {
+        try {
+          return JSON.parse(data);
+        } catch (e) {
+          return [[], [], []];
+        }
+      }
+      return [[], [], []];
+    }
+    function saveTodos() {
+      localStorage.setItem('kira2_todos', JSON.stringify(todos));
+    }
+
+    // 연습 데이터 관리
+    function loadPracticeData() {
+      const data = localStorage.getItem('kira2_practice_data');
+      if (data) {
+        try {
+          return JSON.parse(data);
+        } catch (e) {
+          return [];
+        }
+      }
+      return [];
+    }
+    function savePracticeData() {
+      localStorage.setItem('kira2_practice_data', JSON.stringify(practiceData));
+    }
+
+    let todos = loadTodos(); // 각 페이지별 to-do-list
+    let practiceData = loadPracticeData(); // 연습 데이터
+
+    function renderTodos(page) {
+      const list = document.getElementById(`todo-list-${page}`);
+      list.innerHTML = '';
+      todos[page].sort((a, b) => {
+        const order = { '상': 0, '중': 1, '하': 2 };
+        return order[a.priority] - order[b.priority];
+      });
+      todos[page].forEach((todo, idx) => {
+        const div = document.createElement('div');
+        div.className = 'todo-item' + (todo.done ? ' done' : '');
+        div.draggable = true;
+        div.dataset.page = page;
+        div.dataset.idx = idx;
+        div.innerHTML = `
+          <input type=\"checkbox\" ${todo.done ? 'checked' : ''} onchange=\"toggleDone(${page},${idx})\"/>
+          <textarea rows=\"1\" ${todo.done ? 'disabled' : ''} data-page=\"${page}\" data-idx=\"${idx}\">${todo.text}</textarea>
+          <button onclick=\"deleteTodo(${page},${idx})\">삭제</button>
+        `;
+        list.appendChild(div);
+        
+        // 드래그 이벤트 리스너 추가
+        div.addEventListener('dragstart', handleDragStart);
+        div.addEventListener('dragover', handleDragOver);
+        div.addEventListener('drop', handleDrop);
+        div.addEventListener('dragenter', handleDragEnter);
+        div.addEventListener('dragleave', handleDragLeave);
+        
+        // 모바일 터치 이벤트 추가
+        div.addEventListener('touchstart', handleTouchStart);
+        div.addEventListener('touchmove', handleTouchMove);
+        div.addEventListener('touchend', handleTouchEnd);
+        div.addEventListener('touchcancel', handleTouchCancel);
+        
+        // textarea 자동 높이 조절 및 저장 이벤트
+        const textareaEl = div.querySelector('textarea');
+        function autoResize(el) {
+          el.style.height = 'auto';
+          el.style.height = el.scrollHeight + 'px';
+        }
+        // 초기 높이 설정을 위해 약간의 지연 후 실행
+        setTimeout(() => {
+          autoResize(textareaEl);
+        }, 10);
+        textareaEl.addEventListener('input', function(e) {
+          autoResize(this);
+        });
+        textareaEl.addEventListener('change', function(e) {
+          editTodo(page, idx, this.value);
+          // 변경 후에도 높이 재조정
+          setTimeout(() => {
+            autoResize(this);
+          }, 10);
+        });
+        textareaEl.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            editTodo(page, idx, this.value);
+            this.blur();
+            // 엔터 후에도 높이 재조정
+            setTimeout(() => {
+              autoResize(this);
+            }, 10);
+          }
+        });
+        // 추가: DOM이 완전히 렌더링된 후 높이 조정
+        setTimeout(() => {
+          autoResize(textareaEl);
+        }, 100);
+      });
+    }
+
+    // 드래그 앤 드롭 관련 변수
+    let draggedItem = null;
+    let draggedPage = null;
+    let draggedIdx = null;
+    
+    // 모바일 터치 드래그 관련 변수
+    let touchStartY = 0;
+    let touchStartX = 0;
+    let isDragging = false;
+    let dragTimeout = null;
+    let originalY = 0;
+    let currentY = 0;
+    let draggedElement = null;
+    let placeholder = null;
+    let listContainer = null;
+    
+    // 드래그 시작
+    function handleDragStart(e) {
+      draggedItem = this;
+      draggedPage = parseInt(this.dataset.page);
+      draggedIdx = parseInt(this.dataset.idx);
+      this.style.opacity = '0.5';
+      e.dataTransfer.effectAllowed = 'move';
+    }
+    
+    // 드래그 오버
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    }
+    
+    // 드래그 엔터
+    function handleDragEnter(e) {
+      e.preventDefault();
+      this.style.borderTop = '2px solid #007bff';
+    }
+    
+    // 드래그 리브
+    function handleDragLeave(e) {
+      this.style.borderTop = '';
+    }
+    
+    // 드롭
+    function handleDrop(e) {
+      e.preventDefault();
+      this.style.borderTop = '';
+      
+      if (draggedItem !== this) {
+        const dropPage = parseInt(this.dataset.page);
+        const dropIdx = parseInt(this.dataset.idx);
+        
+        // 같은 페이지 내에서만 이동 가능
+        if (draggedPage === dropPage) {
+          // 배열에서 항목 이동
+          const [movedItem] = todos[draggedPage].splice(draggedIdx, 1);
+          todos[draggedPage].splice(dropIdx, 0, movedItem);
+          
+          // localStorage에 저장
+          saveTodos();
+          
+          // UI 다시 렌더링
+          renderTodos(draggedPage);
+        }
+      }
+      
+      draggedItem.style.opacity = '';
+      draggedItem = null;
+      draggedPage = null;
+      draggedIdx = null;
+    }
+    
+    // 터치 시작
+    function handleTouchStart(e) {
+      if (e.touches.length !== 1) return;
+      
+      const touch = e.touches[0];
+      touchStartY = touch.clientY;
+      touchStartX = touch.clientX;
+      originalY = this.offsetTop;
+      draggedElement = this;
+      listContainer = this.parentElement;
+      
+      // 500ms 후에 드래그 시작
+      dragTimeout = setTimeout(() => {
+        isDragging = true;
+        this.style.opacity = '0.8';
+        this.style.zIndex = '1000';
+        this.style.position = 'relative';
+        
+        // 플레이스홀더 생성
+        placeholder = document.createElement('div');
+        placeholder.style.height = this.offsetHeight + 'px';
+        placeholder.style.border = '2px dashed #ccc';
+        placeholder.style.margin = '5px 0';
+        placeholder.style.backgroundColor = '#f9f9f9';
+        this.parentElement.insertBefore(placeholder, this);
+        
+        // 스크롤 방지
+        document.body.style.overflow = 'hidden';
+      }, 500);
+    }
+    
+    // 터치 이동
+    function handleTouchMove(e) {
+      if (!isDragging || e.touches.length !== 1) return;
+      
+      e.preventDefault();
+      const touch = e.touches[0];
+      currentY = touch.clientY;
+      
+      // 드래그 중인 요소 위치 업데이트
+      const deltaY = currentY - touchStartY;
+      draggedElement.style.transform = `translateY(${deltaY}px)`;
+      
+      // 다른 요소들과의 위치 비교
+      const items = Array.from(listContainer.children).filter(child => 
+        child.classList.contains('todo-item') && child !== draggedElement
+      );
+      
+      items.forEach(item => {
+        const itemRect = item.getBoundingClientRect();
+        const draggedRect = draggedElement.getBoundingClientRect();
+        
+        if (currentY < itemRect.top + itemRect.height / 2) {
+          if (placeholder && placeholder.nextSibling !== item) {
+            listContainer.insertBefore(placeholder, item);
+          }
+        } else if (currentY > itemRect.bottom - itemRect.height / 2) {
+          if (placeholder && placeholder.nextSibling !== item.nextSibling) {
+            listContainer.insertBefore(placeholder, item.nextSibling);
+          }
+        }
+      });
+    }
+    
+    // 터치 종료
+    function handleTouchEnd(e) {
+      if (dragTimeout) {
+        clearTimeout(dragTimeout);
+        dragTimeout = null;
+      }
+      
+      if (!isDragging) return;
+      
+      isDragging = false;
+      document.body.style.overflow = '';
+      
+      if (draggedElement && placeholder) {
+        // 드래그된 요소를 플레이스홀더 위치로 이동
+        const draggedPage = parseInt(draggedElement.dataset.page);
+        const draggedIdx = parseInt(draggedElement.dataset.idx);
+        
+        // 플레이스홀더의 위치를 찾아서 새로운 인덱스 계산
+        const items = Array.from(listContainer.children).filter(child => 
+          child.classList.contains('todo-item')
+        );
+        const placeholderIndex = Array.from(listContainer.children).indexOf(placeholder);
+        const newIdx = Math.max(0, placeholderIndex - 1); // 플레이스홀더 앞의 아이템 수
+        
+        if (draggedIdx !== newIdx) {
+          // 배열에서 항목 이동
+          const [movedItem] = todos[draggedPage].splice(draggedIdx, 1);
+          todos[draggedPage].splice(newIdx, 0, movedItem);
+          
+          // localStorage에 저장
+          saveTodos();
+          
+          // UI 다시 렌더링
+          renderTodos(draggedPage);
+        } else {
+          // 위치가 같으면 원래 상태로 복원
+          draggedElement.style.opacity = '';
+          draggedElement.style.zIndex = '';
+          draggedElement.style.position = '';
+          draggedElement.style.transform = '';
+          if (placeholder) {
+            placeholder.remove();
+          }
+        }
+      }
+      
+      // 변수 초기화
+      draggedElement = null;
+      placeholder = null;
+      listContainer = null;
+    }
+    
+    // 터치 취소
+    function handleTouchCancel(e) {
+      if (dragTimeout) {
+        clearTimeout(dragTimeout);
+        dragTimeout = null;
+      }
+      
+      if (isDragging) {
+        isDragging = false;
+        document.body.style.overflow = '';
+        
+        if (draggedElement) {
+          draggedElement.style.opacity = '';
+          draggedElement.style.zIndex = '';
+          draggedElement.style.position = '';
+          draggedElement.style.transform = '';
+        }
+        
+        if (placeholder) {
+          placeholder.remove();
+        }
+        
+        draggedElement = null;
+        placeholder = null;
+        listContainer = null;
+      }
+    }
+
+    function editTodo(page, idx, value) {
+      todos[page][idx].text = value;
+      saveTodos();
+      renderTodos(page);
+    }
+    function deleteTodo(page, idx) {
+      todos[page].splice(idx, 1);
+      saveTodos();
+      renderTodos(page);
+    }
+    function toggleDone(page, idx) {
+      todos[page][idx].done = !todos[page][idx].done;
+      saveTodos();
+      renderTodos(page);
+    }
+    function changePriority(page, idx, value) {
+      todos[page][idx].priority = value;
+      saveTodos();
+      renderTodos(page);
+    }
+
+    // 연습 페이지 렌더링
+    function renderPracticeTable() {
+      const tbody = document.getElementById('practice-tbody');
+      tbody.innerHTML = '';
+      
+      practiceData.forEach((row, rowIndex) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="year-cell">${row.year}</td>
+          <td class="type-cell">${row.type}</td>
+          <td class="count-cell">
+            <div class="count-boxes">
+              ${Array(5).fill(0).map((_, i) => {
+                let className = 'count-box';
+                if (i < row.count) {
+                  className += ' filled';
+                  if (row.successBoxes && row.successBoxes.includes(i)) {
+                    // 성공 상태 (초록색)
+                    className += ' success';
+                  } else {
+                    // 일반 상태 (구분에 따른 색상)
+                    if (row.type === '평면') {
+                      className += ' plane';
+                    } else if (row.type === '단면') {
+                      className += ' section';
+                    } else if (row.type === '구조') {
+                      className += ' structure';
+                    }
+                  }
+                }
+                return `<div class="${className}" 
+                           onclick="toggleCountBox(${rowIndex}, ${i})"></div>`;
+              }).join('')}
+            </div>
+          </td>
+          <td class="note-cell">
+            <input type="text" value="${row.note || ''}" 
+                   onchange="updatePracticeNote(${rowIndex}, this.value)"
+                   placeholder="비고 입력">
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // 연습 행 추가
+    function addPracticeRow() {
+      const years = [
+        '26/1', '26/2', '27', '28', '29', '30', '31', '32', '33', '34', '35',
+        '25/2', '25/1', '24/2', '24/1', '23/2', '23/1', '22/2', '22/1', '21/2', '21/1', '20/2', '20/1',
+        '2019', '2018', '2017', '2016', '2015', '2014', '2013', '2012', '2011', '2010'
+      ];
+      const types = ['구조', '단면', '평면'];
+      
+      // 현재 데이터에서 사용된 연도와 구분 조합 찾기
+      const usedCombinations = new Set();
+      practiceData.forEach(row => {
+        usedCombinations.add(`${row.year}-${row.type}`);
+      });
+      
+      // 사용되지 않은 조합 찾기
+      let newYear = years[0];
+      let newType = types[0];
+      
+      for (const year of years) {
+        for (const type of types) {
+          if (!usedCombinations.has(`${year}-${type}`)) {
+            newYear = year;
+            newType = type;
+            break;
+          }
+        }
+        if (!usedCombinations.has(`${newYear}-${newType}`)) break;
+      }
+      
+      practiceData.unshift({
+        year: newYear,
+        type: newType,
+        count: 0,
+        successBoxes: [],
+        note: ''
+      });
+      
+      savePracticeData();
+      renderPracticeTable();
+    }
+
+    // 횟수 박스 상태 순환 (빈칸 → 색상 → 초록색 → 빈칸)
+    function toggleCountBox(rowIndex, boxIndex) {
+      const row = practiceData[rowIndex];
+      
+      // 현재 칸의 상태 확인
+      const isFilled = boxIndex < row.count;
+      const isSuccess = row.successBoxes && row.successBoxes.includes(boxIndex);
+      
+      if (!isFilled) {
+        // 1. 빈 칸 → 색상으로 채우기
+        row.count = Math.max(row.count, boxIndex + 1);
+      } else if (isFilled && !isSuccess) {
+        // 2. 색상 칸 → 초록색으로 변경
+        if (!row.successBoxes) row.successBoxes = [];
+        row.successBoxes.push(boxIndex);
+      } else if (isSuccess) {
+        // 3. 초록색 칸 → 빈칸으로 되돌리기
+        row.successBoxes = row.successBoxes.filter(box => box !== boxIndex);
+        row.count = boxIndex;
+      }
+      
+      savePracticeData();
+      renderPracticeTable();
+    }
+
+    // 비고 업데이트
+    function updatePracticeNote(rowIndex, value) {
+      practiceData[rowIndex].note = value;
+      savePracticeData();
+    }
+
+    // 전체 데이터 복사 함수
+    function copyAllData() {
+      const now = new Date();
+      const dateStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+      
+      let content = `🏗️ 건축사 시험 준비 현황 보고서\n`;
+      content += `📅 생성일: ${dateStr}\n`;
+      content += `⏰ 생성시간: ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}\n`;
+      content += `\n${'='.repeat(50)}\n\n`;
+      
+      // 홈 페이지 데이터
+      content += `🏠 홈 - 시험 준비 현황\n`;
+      content += `📅 시험일자: 2026년 3월 14일(토)\n`;
+      content += `⏰ D-day: ${document.getElementById('d-day').textContent}\n`;
+      content += `📊 현재시간: ${document.getElementById('today-info').textContent}\n\n`;
+      
+      // 연습 목표 달성율
+      content += `🎯 연습 목표 달성율\n`;
+      const subjects = ['평면', '단면', '구조'];
+      for (let i = 0; i < 3; i++) {
+        const count = document.getElementById(`count-${i}`).value || '0';
+        const rate = document.getElementById(`rate-${i}`).textContent;
+        const time = document.getElementById(`time-${i}`).value || '';
+        content += `• ${subjects[i]}: ${count}회 (${rate}) ${time ? `소요시간: ${time}` : ''}\n`;
+      }
+      content += `\n`;
+      
+      // 나의 각오
+      const myMind = document.getElementById('my-mind').value;
+      if (myMind.trim()) {
+        content += `💭 나의 각오\n${myMind}\n\n`;
+      }
+      
+      content += `${'='.repeat(50)}\n\n`;
+      
+      // To-Do List들
+      const todoPages = [
+        { name: '평면설계', id: 0 },
+        { name: '단면설계', id: 1 },
+        { name: '구조설계', id: 2 }
+      ];
+      
+      todoPages.forEach(page => {
+        const todos = JSON.parse(localStorage.getItem('kira2_todos'))[page.id] || [];
+        if (todos.length > 0) {
+          content += `📋 ${page.name} To-Do List\n`;
+          todos.forEach((todo, idx) => {
+            const status = todo.done ? '✅' : '⭕';
+            const priority = todo.priority === '상' ? '🔴' : todo.priority === '중' ? '🟡' : '🟢';
+            content += `${status} ${priority} ${todo.text}\n`;
+          });
+          content += `\n`;
+        }
+      });
+      
+      // 연습 기록
+      const practiceData = JSON.parse(localStorage.getItem('kira2_practice_data')) || [];
+      if (practiceData.length > 0) {
+        content += `📚 연습 기록\n`;
+        content += `연도 | 구분 | 완료횟수 | 비고\n`;
+        content += `${'-'.repeat(40)}\n`;
+        
+        practiceData.forEach(row => {
+          const countStr = '■'.repeat(row.count) + '□'.repeat(5 - row.count);
+          const successStr = row.successBoxes ? row.successBoxes.map(i => i < row.count ? '🟢' : '□').join('') : '□□□□□';
+          content += `${row.year.padEnd(6)} | ${row.type.padEnd(4)} | ${countStr} | ${row.note || ''}\n`;
+        });
+        content += `\n`;
+      }
+      
+      content += `${'='.repeat(50)}\n`;
+      content += `📱 앱에서 생성된 보고서입니다.\n`;
+      content += `🏗️ 건축사 시험 합격을 응원합니다! 💪\n`;
+      
+      // 클립보드에 복사
+      navigator.clipboard.writeText(content).then(() => {
+        alert('📋 전체 데이터가 클립보드에 복사되었습니다!\n\n복사된 내용을 메모장이나 문서에 붙여넣기 하세요.');
+      }).catch(err => {
+        // 클립보드 API가 지원되지 않는 경우 대체 방법
+        const textArea = document.createElement('textarea');
+        textArea.value = content;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        alert('📋 전체 데이터가 클립보드에 복사되었습니다!\n\n복사된 내용을 메모장이나 문서에 붙여넣기 하세요.');
+      });
+    }
+
+    // 각 페이지 진입 시 to-do-list 렌더링
+    // 새로고침 시 마지막으로 본 탭으로 이동
+    let savedPage = localStorage.getItem('kira2_current_page');
+    if (savedPage === null) savedPage = 0;
+    showPage(Number(savedPage));
+    renderTodos(0);
+    renderTodos(1);
+    renderTodos(2);
+    
+    // 최초 방문 시에만 초기 데이터 설정
+    if (!localStorage.getItem('kira2_todos') && !localStorage.getItem('kira2_practice_data')) {
+      initializeData();
+    } else if (practiceData.length === 0) {
+      addPracticeRow();
+    }
+
+    // 25/1 평면 행 삭제 마이그레이션
+    const migIdx = practiceData.findIndex(r => r.year === '25/1' && r.type === '평면');
+    if (migIdx !== -1) {
+      practiceData.splice(migIdx, 1);
+      savePracticeData();
+    }
+
+    // 연습 데이터 정렬 마이그레이션: 연도 내 순서를 평면→단면→구조로 고정
+    (function sortPracticeData() {
+      const typeOrder = { '평면': 0, '단면': 1, '구조': 2 };
+      const yearOrder = [
+        '26/2','26/1','25/2','25/1','24/2','24/1','23/2','23/1','22/2','22/1',
+        '21/2','21/1','20/2','20/1','2019','2018','2017','2016','2015','2014',
+        '2013','2012','2011','2010','2009','2008','2007','2006','2005','2004',
+        '2003','2002','2001','2000','1999',
+        '27','28','29','30','31','32','33','34','35'
+      ];
+      practiceData.sort((a, b) => {
+        const yi = yearOrder.indexOf(a.year) - yearOrder.indexOf(b.year);
+        if (yi !== 0) return yi;
+        return typeOrder[a.type] - typeOrder[b.type];
+      });
+      savePracticeData();
+    })();
+
+    // '나의 각오' textarea 자동 높이 조절 및 저장 기능
+    const mindTextarea = document.getElementById('my-mind');
+    const mindMsg = document.getElementById('mind-saved-msg');
+    
+    // textarea 자동 높이 조절 함수
+    function autoResizeMind(el) {
+      el.style.height = 'auto';
+      el.style.height = el.scrollHeight + 'px';
+    }
+    
+    // 저장된 값 불러오기
+    const savedMind = localStorage.getItem('myMind');
+    if (savedMind) {
+      // 반복된 텍스트를 원본으로 변환 (첫 번째 텍스트만 추출)
+      const originalText = savedMind.split('    ')[0];
+      mindTextarea.value = originalText;
+      autoResizeMind(mindTextarea);
+    }
+    
+    // 입력 시 높이 자동 조절
+    mindTextarea.addEventListener('input', function() {
+      autoResizeMind(this);
+    });
+    
+    // 엔터 또는 포커스 해제 시 저장
+    mindTextarea.addEventListener('blur', function() {
+      localStorage.setItem('myMind', this.value);
+      mindMsg.style.display = 'inline';
+      setTimeout(() => { mindMsg.style.display = 'none'; }, 1200);
+    });
+
+    // 더블탭으로 저장 (Enter는 줄바꿈만)
+    let tapCount = 0;
+    let tapTimer = null;
+    
+    mindTextarea.addEventListener('touchstart', function(e) {
+      tapCount++;
+      if (tapCount === 1) {
+        tapTimer = setTimeout(() => {
+          tapCount = 0;
+        }, 300);
+      } else if (tapCount === 2) {
+        clearTimeout(tapTimer);
+        tapCount = 0;
+        // 더블탭 시 저장
+        localStorage.setItem('myMind', this.value);
+        mindMsg.style.display = 'inline';
+        setTimeout(() => { mindMsg.style.display = 'none'; }, 1200);
+        this.blur();
+      }
+    });
+    
+    // 초기 높이 설정
+    setTimeout(() => {
+      autoResizeMind(mindTextarea);
+    }, 10);
+  
+    // 추가로 한 번 더 실행하여 확실하게 조정
+    setTimeout(() => {
+      autoResizeMind(mindTextarea);
+    }, 100);
+
+    // 투두 입력란에서 엔터로 바로 추가 기능
+    for (let page = 0; page < 3; page++) {
+      const input = document.getElementById(`todo-input-${page}`);
+      const prioritySel = document.getElementById(`priority-${page}`);
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && input.value.trim()) {
+          todos[page].push({ text: input.value.trim(), done: false, priority: prioritySel.value });
+          input.value = '';
+          saveTodos();
+          renderTodos(page);
+        }
+      });
+    }
+
+    // 소요시간 입력값 저장/불러오기 (localStorage)
+    for (let i = 0; i < 3; i++) {
+      const timeInput = document.getElementById(`time-${i}`);
+      // 저장된 값 불러오기
+      const saved = localStorage.getItem(`kira2_time_${i}`);
+      if (saved) timeInput.value = saved;
+      // 입력 시 저장
+      timeInput.addEventListener('change', function() {
+        localStorage.setItem(`kira2_time_${i}`, this.value);
+      });
+      // 엔터로도 저장
+      timeInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          localStorage.setItem(`kira2_time_${i}`, this.value);
+          this.blur();
+        }
+      });
+    }
+
+    // 초기 데이터 설정
+    function initializeData() {
+      // To-Do List 초기 데이터
+      const initialTodos = [
+        // 평면설계 To-Do List
+        [
+          { text: "정확한 면적 확인 필요!(가도면 필수)", done: false, priority: "상" },
+          { text: "코어 설계가 제일 중요!", done: false, priority: "상" },
+          { text: "나는 복잡한 것을 정말 못한다 = 그래서 연습을 엄청 많이 해야 한다!!!", done: false, priority: "상" },
+          { text: "조금씩 방법을 찾아나간다. 이 재미다! ^^", done: false, priority: "상" },
+          { text: "(지문 읽기: 20)-(지문 분석: 20)-(격자 나눔: 20+20)-(트레이싱지 가설계: XX20)-(본작도: 40+40) - (검토보완:10)", done: false, priority: "상" },
+          { text: "제대로 표시 안해두면 계속 또 한다.", done: false, priority: "상" },
+          { text: "그리면서 다음을 생각해야 한다.", done: false, priority: "상" },
+          { text: "평면에서 계단 길이 / 주차 램프 길이 알기", done: false, priority: "상" },
+          { text: "동선/기능 다이어그램으로 검토하기. 수영장. 정답에 가까웠다. 그런데 시간 너무 걸렸다.", done: false, priority: "상" },
+          { text: "드디어! 해냈다! 지역아동센터(계단형서가, 체력단련실, 드론체험실) 24-1", done: false, priority: "상" },
+          { text: "반드시 10분 전에 끝내고 검토해야 한다!!", done: false, priority: "상" },
+          { text: "쉬우면 여유부리다 놓치고, 어려우면 감도 못잡고!!! (21-2) 청소년문화센터", done: false, priority: "상" },
+          { text: "정해진 거 먼저 고정하기!!! 22-1", done: false, priority: "상" },
+          { text: "반드시 작은 도면에서 확정짓기!!! 23-1 계단형어린이도서관, 편의점/카페", done: false, priority: "상" },
+          { text: "평면의 노른자를 찾아라!!!", done: false, priority: "상" },
+          { text: "시간이 절대적으로 부족하다. 즉시 해결하라!", done: false, priority: "상" }
+        ],
+        // 단면설계 To-Do List
+        [
+          { text: "너무 힘들다. 너무 하기 싫어!!! 성공의 운이 올때까지 끈기로 계속 하기.", done: false, priority: "상" },
+          { text: "잡석다짐 - PE필름 - 버림콘크리트 - 콘크리트 온통기초 -", done: false, priority: "상" },
+          { text: "화장실: 콘크리트 바탕면 정리 - 액체방수 - 아스팔트방수 - 시멘트몰탈 - 타일마감", done: false, priority: "상" },
+          { text: "바닥(다목적홀): (500) 침투성방수 - T45 배수판 - T135 압출법보온판2호 - T185 무근콘크리트 - ㅁ50x50x2.3 아연도각관 - T12 내수합판 - T22 단풍나무 플로어링", done: false, priority: "상" },
+          { text: "벽(지중): 침투성방수 - 4인치(100mm, 3.6m미만)(6인치- 콘크리트블록 - 알루미늄스터드 - (T130 글라스울보온판 120K - T12 자작나무합판 - T20 흡음보드", done: false, priority: "상" },
+          { text: "아주 조금씩 친해지다. (철골트러스지붕) 21-1", done: false, priority: "상" },
+          { text: "더 많이 그린다. 원칙을 세운다.", done: false, priority: "상" },
+          { text: "20-2회 따라+반복하기, 2:35…", done: false, priority: "상" },
+          { text: "4시간이 걸렸다. 까마득하다.", done: false, priority: "상" },
+          { text: "단면도 문제지에 답이 있다.", done: false, priority: "상" },
+          { text: "골조-40, 채우기-1:20, 구조-60", done: false, priority: "상" },
+          { text: "가단면을 그려도 헤매는 건 매한가지… ㅠㅠ", done: false, priority: "상" },
+          { text: "20분에 무조건 가단면 끝! 20-30-70.", done: false, priority: "상" }
+        ],
+        // 구조설계 To-Do List
+        [
+          { text: "24-2: (2회) 시간이 안준다! (0726)(0728)", done: false, priority: "상" },
+          { text: "(24-1) 쉬운듯 쉽지 않아. 지문 정확하게 읽기!", done: false, priority: "상" },
+          { text: "(23-1) 말도 안되게 속인다. 숫자를 쓰면서!!!", done: false, priority: "상" },
+          { text: "구조설계: 데크플레이트>보조보>보>기둥", done: false, priority: "상" },
+          { text: "(23-2) 아주 재밌다! 문제답다!! 보 방향!!!", done: false, priority: "상" },
+          { text: "별거 아닌데 모른다. 계속 해야 한다!!!", done: false, priority: "상" },
+          { text: "까마득하면 급졸!!!", done: false, priority: "상" },
+          { text: "배근도 표기법(간략), 숫자 잘 읽기!", done: false, priority: "상" },
+          { text: "힘을 많이 받는 곳으로 I 를 배치한다.", done: false, priority: "상" },
+          { text: "전이보! 9주차. 너무 황당하다! 어이없다!", done: false, priority: "상" },
+          { text: "핵심을 파악하면 금방 그린다!!! (20-2)", done: false, priority: "상" },
+          { text: "어떻게 시간을 줄일 수 있나???", done: false, priority: "상" },
+          { text: "숫자를 놓치면 안 된다. 핵심 숫자!!!", done: false, priority: "상" },
+          { text: "장변 양측으로 길이 2.5m의 캔틸레버를 계획하고…", done: false, priority: "상" },
+          { text: "큰보-기둥-모멘트접합/ 큰보-벽-핀접합", done: false, priority: "상" },
+          { text: "기둥의 강축/약축은 작은보 하중에 따라 결정", done: false, priority: "상" },
+          { text: "캔틸레버에 토막보? 가능함 피해라!", done: false, priority: "상" },
+          { text: "박공충돌. 너무 어렵!!!", done: false, priority: "상" },
+          { text: "작은보는 무조건 짧은 큰보로(기둥 가까운 큰보로!!!)", done: false, priority: "상" },
+          { text: "2011년 함정. 벽위 보. 강접보-힌지보", done: false, priority: "상" },
+          { text: "모르는게 아직도 많다. 프리스트레스트 보.", done: false, priority: "상" }
+        ]
+      ];
+
+      // 연습 데이터 초기 데이터 - 제공해주신 보고서의 모든 데이터 완전 버전
+      const initialPracticeData = [
+        { year: '25/2', type: '평면', count: 0, successBoxes: [], note: '' },
+        { year: '25/2', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '25/2', type: '구조', count: 0, successBoxes: [], note: '' },
+        { year: '25/1', type: '평면', count: 1, successBoxes: [], note: '돌봄창업-아트륨' },
+        { year: '25/1', type: '단면', count: 4, successBoxes: [], note: '단면만 2:35' },
+        { year: '25/1', type: '구조', count: 2, successBoxes: [], note: '총 3:23' },
+        { year: '24/2', type: '평면', count: 2, successBoxes: [], note: '문제3답2출력' },
+        { year: '24/2', type: '단면', count: 2, successBoxes: [], note: '엄청 어려워' },
+        { year: '24/2', type: '구조', count: 4, successBoxes: [], note: '증축-수평/수직' },
+        { year: '24/1', type: '평면', count: 1, successBoxes: [], note: '주차8,캔틸슬,중정' },
+        { year: '24/1', type: '단면', count: 1, successBoxes: [], note: '뭘 뺄까?? 2:58' },
+        { year: '24/1', type: '구조', count: 3, successBoxes: [], note: '지문이해중정주차' },
+        { year: '23/2', type: '평면', count: 1, successBoxes: [], note: '' },
+        { year: '23/2', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '23/2', type: '구조', count: 1, successBoxes: [], note: '데크플-경제성' },
+        { year: '23/1', type: '평면', count: 2, successBoxes: [], note: '분동계단식/편의점' },
+        { year: '23/1', type: '단면', count: 1, successBoxes: [], note: '연습' },
+        { year: '23/1', type: '구조', count: 2, successBoxes: [], note: '목재트러스' },
+        { year: '22/2', type: '평면', count: 1, successBoxes: [], note: '경험활용수영장' },
+        { year: '22/2', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '22/2', type: '구조', count: 1, successBoxes: [], note: '전이보/배근도' },
+        { year: '22/1', type: '평면', count: 1, successBoxes: [], note: '분동/주차램프' },
+        { year: '22/1', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '22/1', type: '구조', count: 1, successBoxes: [], note: '문제 안의 답 찾기' },
+        { year: '21/2', type: '평면', count: 1, successBoxes: [], note: '계단서음악동아리' },
+        { year: '21/2', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '21/2', type: '구조', count: 2, successBoxes: [], note: '박공충돌' },
+        { year: '21/1', type: '평면', count: 3, successBoxes: [], note: '727경사/보호수' },
+        { year: '21/1', type: '단면', count: 2, successBoxes: [], note: '철골트러스지붕' },
+        { year: '21/1', type: '구조', count: 2, successBoxes: [], note: '전이보, 주차9' },
+        { year: '20/2', type: '평면', count: 0, successBoxes: [], note: '출력3' },
+        { year: '20/2', type: '단면', count: 5, successBoxes: [], note: '샘플 과제!' },
+        { year: '20/2', type: '구조', count: 1, successBoxes: [], note: '' },
+        { year: '20/1', type: '평면', count: 1, successBoxes: [], note: '종합1' },
+        { year: '20/1', type: '단면', count: 3, successBoxes: [], note: '종합1' },
+        { year: '20/1', type: '구조', count: 2, successBoxes: [], note: '종합1' },
+        { year: '2019', type: '평면', count: 0, successBoxes: [], note: '' },
+        { year: '2019', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '2019', type: '구조', count: 2, successBoxes: [], note: '꺽인 보/벽돌벽' },
+        { year: '2018', type: '평면', count: 0, successBoxes: [], note: '' },
+        { year: '2018', type: '단면', count: 1, successBoxes: [], note: '4시간???' },
+        { year: '2018', type: '구조', count: 0, successBoxes: [], note: '' },
+        { year: '2017', type: '평면', count: 0, successBoxes: [], note: '' },
+        { year: '2017', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '2017', type: '구조', count: 3, successBoxes: [], note: '박공중간' },
+        { year: '2016', type: '평면', count: 1, successBoxes: [], note: '런웨이' },
+        { year: '2016', type: '단면', count: 5, successBoxes: [], note: '+38' },
+        { year: '2016', type: '구조', count: 3, successBoxes: [], note: '프리스트레스트' },
+        { year: '2015', type: '평면', count: 2, successBoxes: [], note: '레벨차이 많음' },
+        { year: '2015', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '2015', type: '구조', count: 2, successBoxes: [], note: '완전 새로와!!!' },
+        { year: '2014', type: '평면', count: 0, successBoxes: [], note: '' },
+        { year: '2014', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '2014', type: '구조', count: 1, successBoxes: [], note: '철골강당페데스탈' },
+        { year: '2013', type: '평면', count: 0, successBoxes: [], note: '' },
+        { year: '2013', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '2013', type: '구조', count: 3, successBoxes: [], note: '' },
+        { year: '2012', type: '평면', count: 0, successBoxes: [], note: '' },
+        { year: '2012', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '2012', type: '구조', count: 1, successBoxes: [], note: '60분' },
+        { year: '2011', type: '평면', count: 0, successBoxes: [], note: '' },
+        { year: '2011', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '2011', type: '구조', count: 2, successBoxes: [], note: '함정!!!' },
+        { year: '2010', type: '평면', count: 0, successBoxes: [], note: '' },
+        { year: '2010', type: '단면', count: 1, successBoxes: [], note: '' },
+        { year: '2010', type: '구조', count: 1, successBoxes: [], note: '자꾸 빼먹어' },
+        { year: '2009', type: '평면', count: 0, successBoxes: [], note: '' },
+        { year: '2009', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '2009', type: '구조', count: 0, successBoxes: [], note: '' },
+        { year: '2008', type: '평면', count: 0, successBoxes: [], note: '' },
+        { year: '2008', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '2008', type: '구조', count: 0, successBoxes: [], note: '' },
+        { year: '2007', type: '평면', count: 0, successBoxes: [], note: '' },
+        { year: '2007', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '2007', type: '구조', count: 0, successBoxes: [], note: '' },
+        { year: '2006', type: '평면', count: 0, successBoxes: [], note: '' },
+        { year: '2006', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '2006', type: '구조', count: 0, successBoxes: [], note: '' },
+        { year: '2005', type: '평면', count: 0, successBoxes: [], note: '' },
+        { year: '2005', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '2005', type: '구조', count: 0, successBoxes: [], note: '' },
+        { year: '2004', type: '평면', count: 0, successBoxes: [], note: '' },
+        { year: '2004', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '2004', type: '구조', count: 0, successBoxes: [], note: '' },
+        { year: '2003', type: '평면', count: 0, successBoxes: [], note: '' },
+        { year: '2003', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '2003', type: '구조', count: 0, successBoxes: [], note: '' },
+        { year: '2002', type: '평면', count: 0, successBoxes: [], note: '' },
+        { year: '2002', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '2002', type: '구조', count: 0, successBoxes: [], note: '' },
+        { year: '2001', type: '평면', count: 0, successBoxes: [], note: '' },
+        { year: '2001', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '2001', type: '구조', count: 0, successBoxes: [], note: '' },
+        { year: '2000', type: '평면', count: 0, successBoxes: [], note: '' },
+        { year: '2000', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '2000', type: '구조', count: 0, successBoxes: [], note: '' },
+        { year: '1999', type: '평면', count: 0, successBoxes: [], note: '' },
+        { year: '1999', type: '단면', count: 0, successBoxes: [], note: '' },
+        { year: '1999', type: '구조', count: 0, successBoxes: [], note: '' }
+      ];
+
+      // localStorage에 초기 데이터 저장
+      localStorage.setItem('kira2_todos', JSON.stringify(initialTodos));
+      localStorage.setItem('kira2_practice_data', JSON.stringify(initialPracticeData));
+      
+      // 전역 변수 업데이트
+      todos = initialTodos;
+      practiceData = initialPracticeData;
+      
+      // UI 업데이트
+      renderTodos(0);
+      renderTodos(1);
+      renderTodos(2);
+      renderPracticeTable();
+    }
+
+  </script>
+</body>
+</html>
